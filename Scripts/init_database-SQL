@@ -1,0 +1,43 @@
+-- ============================================================================
+-- Description: Initializes the Data Warehouse database and sets up the
+--              Medallion Architecture layers (Bronze, Silver, Gold).
+-- Architecture: Medallion (Data Lakehouse Best Practices)
+-- Target Platform: Microsoft SQL Server / Azure SQL Data Warehouse
+-- PURPOSE: Sets up the 'DataWarehouse' database and its 3 layers (Bronze, Silver, Gold).
+-- WARNING: Do not run this script on a live production server. It can overwrite 
+--          settings or cause errors if other people are using the database. 
+--          Always test it on a local development machine first.
+-- ============================================================================
+
+-- 1. Create the Data Warehouse database if it does not already exist
+IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'DataWarehouse')
+BEGIN
+    CREATE DATABASE DataWarehouse;
+END
+GO
+
+-- 2. Switch context to the DataWarehouse database for subsequent schema creation
+USE DataWarehouse;
+GO
+
+-- 3. Create 'bronze' schema (Raw ingestion layer)
+--    Note: CREATE SCHEMA must be the first statement in a batch, requiring GO separators.
+IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'bronze')
+BEGIN
+    EXEC('CREATE SCHEMA bronze;');
+END
+GO
+
+-- 4. Create 'silver' schema (Cleaned, enriched, and conformed data layer)
+IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'silver')
+BEGIN
+    EXEC('CREATE SCHEMA silver;');
+END
+GO
+
+-- 5. Create 'gold' schema (Business-ready, aggregated reporting layer)
+IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'gold')
+BEGIN
+    EXEC('CREATE SCHEMA gold;');
+END
+GO
