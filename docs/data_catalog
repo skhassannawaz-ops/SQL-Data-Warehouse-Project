@@ -1,0 +1,27 @@
+Sales Data Mart — Data Catalog					
+					
+					
+Schema	          gold (medallion architecture — business-ready, query-optimized layer)				
+Model type	      Star schema				
+Grain	            One row per sales order line				
+Description	      Sales performance data mart with a central fact table capturing order-level sales transactions, linked to descriptive dimension tables for customers 
+                  and products.				
+					
+Table Inventory					
+Table	                Type	        Grain / Purpose	                      # Columns	      Primary Key	
+gold.fact_sales	      Fact	        One row per sales order line item	    10	            (none — degenerate; see FK1+FK2+order_number)	
+gold.dim_customers	  Dimension	    One row per customer	                9	              customer_key	
+gold.dim_products    	Dimension	    One row per product	                  11	            product_key	
+					
+					
+Relationships					
+From	                To	                Cardinality	    Join Key		
+gold.dim_customers	  gold.fact_sales	    One-to-Many	    customer_key		
+gold.dim_products	    gold.fact_sales	    One-to-Many	    product_key		
+					
+					
+Legend					
+PK	        Primary Key				
+FK	        Foreign Key				
+Fact table					
+Dimension table					
